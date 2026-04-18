@@ -1,31 +1,15 @@
-# Task role
-output "ecs_task_role_name" {
-  description = "Name of the ECS task IAM role."
-  value       = aws_iam_role.ecs_task_role.name
+output "eks_cluster_role_arn" {
+  value = aws_iam_role.eks_cluster_role.arn
 }
 
-output "ecs_task_role_arn" {
-  description = "ARN of the ECS task IAM role."
-  value       = aws_iam_role.ecs_task_role.arn
+ output "eks_cluster_role_policy_id" {
+  value = aws_iam_role_policy_attachment.eks_cluster_role_policy.id
 }
 
-output "ecs_task_role_id" {
-  description = "ID of the ECS task IAM role."
-  value       = aws_iam_role.ecs_task_role.id
+output "eks_node_role_arn" {
+  value = aws_iam_role.eks_node_role.arn
 }
 
-# Execution role
-output "ecs_task_execution_role_name" {
-  description = "Name of the ECS task execution IAM role."
-  value       = aws_iam_role.ecs_task_execution_role.name
-}
-
-output "ecs_task_execution_role_arn" {
-  description = "ARN of the ECS task execution IAM role."
-  value       = aws_iam_role.ecs_task_execution_role.arn
-}
-
-output "ecs_task_execution_role_id" {
-  description = "ID of the ECS task execution IAM role."
-  value       = aws_iam_role.ecs_task_execution_role.id
+ output "eks_node_role_policy_id" {
+  value = aws_iam_role_policy_attachment.eks_node_role_policy.id
 }

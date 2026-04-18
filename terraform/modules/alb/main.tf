@@ -1,54 +1,51 @@
-resource "aws_lb" "load_balancer" {
-  name               = "${var.name_prefix}-alb"
-  internal           = var.internal
-  load_balancer_type = var.load_balancer_type
-  security_groups    = var.security_group_ids
-  subnets            = var.subnet_ids
+resource "aws_lb" "my_alb" {
+ name               = "my-alb"
+ internal           = false
+ load_balancer_type = "application"
+ security_groups    = [var.alb_security_group_id]
+ subnets            = var.subnet_ids
 
-  tags = merge(
-    var.tags,
-    { Name = "${var.name_prefix}-alb" }
-  )
 }
 
+resource "aws_lb_listener" "http_forward" {
+  load_balancer_arn = aws_lb.my_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.django_app_alb.arn
+  }
+}
+
+##### USE WHEN YOU MAKE ACM AND ROUTE53
+/**
 resource "aws_lb_listener" "http_redirect" {
-  count             = var.http_enabled && var.redirect_http_to_https ? 1 : 0
-  load_balancer_arn = aws_lb.load_balancer.arn
-  port              = var.http_port
+  load_balancer_arn = aws_lb.my_alb.arn
+  port              = 80
   protocol          = "HTTP"
 
   default_action {
     type = "redirect"
     redirect {
-      port        = tostring(var.https_port)
+      port        = "443"
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
   }
 }
 
-resource "aws_lb_listener" "http_forward" {
-  count             = var.http_enabled && !var.redirect_http_to_https ? 1 : 0
-  load_balancer_arn = aws_lb.load_balancer.arn
-  port              = var.http_port
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = var.http_forward_target_group_arn
-  }
-}
-
 resource "aws_lb_listener" "https" {
-  count             = var.https_enabled ? 1 : 0
-  load_balancer_arn = aws_lb.load_balancer.arn
-  port              = var.https_port
+  load_balancer_arn = aws_lb.my_alb.arn
+  port              = 443
   protocol          = "HTTPS"
-  ssl_policy        = var.ssl_policy
-  certificate_arn   = var.certificate_arn
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = null
 
   default_action {
     type             = "forward"
-    target_group_arn = var.https_forward_target_group_arn
+    target_group_arn = aws_lb_target_group.django_app_alb.arn
   }
 }
+*/
+

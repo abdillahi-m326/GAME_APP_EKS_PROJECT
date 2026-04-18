@@ -16,16 +16,16 @@ output "vpc_cidr_block" {
 output "public_subnet_ids" {
   description = "IDs of the public subnets"
   value = [
-    aws_subnet.public_subnet1.id,
-    aws_subnet.public_subnet2.id,
+    aws_subnet.public_subnet_1.id,
+    aws_subnet.public_subnet_2.id,
   ]
 }
 
 output "private_subnet_ids" {
   description = "IDs of the private subnets"
   value = [
-    aws_subnet.private_subnet1.id,
-    aws_subnet.private_subnet2.id,
+    aws_subnet.private_subnet_1.id,
+    aws_,
   ]
 }
 
@@ -42,14 +42,4 @@ output "public_route_table_id" {
 output "private_route_table_id" {
   description = "ID of the private route table"
   value       = aws_route_table.private_route_table.id
-}
-
-output "nat_gateway_id" {
-  description = "ID of the NAT Gateway"
-  value       = aws_nat_gateway.nat.id
-}
-
-output "nat_eip_allocation_id" {
-  description = "Allocation ID of the EIP used by the NAT Gateway"
-  value       = aws_eip.nat.allocation_id
 }

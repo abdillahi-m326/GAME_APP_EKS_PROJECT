@@ -1,1 +1,83 @@
+# Node / Package files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build / Output
+dist/
+build/
+out/
+.tmp/
+.cache/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+
+# Logs
+logs/
+*.log
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+
+.dockerignore
+docker-compose.override.yml
+
+# Sass / Cache
+
 .sass-cache/
+
+# Misc
+coverage/
+*.tgz
+*.bak
+*.tmp
+
+# Terraform working directory
+.terraform/
+
+# Terraform state files (contain sensitive data!)
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+
+# Override files (local-only configs)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Lock file (optional – see note below)
+.terraform.lock.hcl
+
+# Plan files
+*.tfplan
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+
+# Environment files
+.env
+.env.*

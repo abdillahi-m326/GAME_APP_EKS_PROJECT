@@ -1,64 +1,51 @@
-locals {
-  task_role_name      = coalesce(var.task_role_name, "${var.name_prefix}-ecs-task-role")
-  execution_role_name = coalesce(var.execution_role_name, "${var.name_prefix}-ecs-task-execution-role")
-}
-
-resource "aws_iam_role" "ecs_task_role" {
-  name = local.task_role_name
+resource "aws_iam_role" "eks_cluster_role" {
+  name = "eks_cluster_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Principal = {
-          Service = var.task_assume_role_services
-        }
         Action = "sts:AssumeRole"
-      }
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "eks-tasks.amazonaws.com"
+        }
+      },
     ]
   })
-
-  tags = merge(
-    var.tags,
-    {
-      Name = local.task_role_name
-    }
-  )
 }
 
-resource "aws_iam_role_policy_attachment" "task_policy_attachments" {
-  for_each   = toset(var.task_managed_policy_arns)
-  role       = aws_iam_role.ecs_task_role.name
-  policy_arn = each.value
+# Attach ECS task execution role policy
+resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
+    role       = aws_iam_role.eks_role.name
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = local.execution_role_name
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = var.execution_assume_role_services
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-
-  tags = merge(
-    var.tags,
-    {
-      Name = local.execution_role_name
-    }
-  )
+# Role for eks nodes to assume 
+resource "aws_iam_role" "eks_node_role" {
+    name = "eks_node_role"
+    assume_role_policy = jsonencode({
+        Version = "2012-10-17",
+        Statement = [
+            {
+                Action = "sts:AssumeRole"
+                Effect = "Allow",
+                Principal = {
+                    Service = "ec2.amazonaws.com"
+                }
+            }
+        ]
+    })
 }
 
-resource "aws_iam_role_policy_attachment" "execution_policy_attachments" {
-  for_each   = toset(var.execution_managed_policy_arns)
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = each.value
+resource "aws_iam_role_policy_attachment" "eks_node_role_policy" {
+  for_each = toset([
+    "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+    "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+    ])
+   
+    policy_arn = each.value
+    role       = aws_iam_role.eks_node_role.name
 }

@@ -1,34 +1,58 @@
-resource "aws_security_group" "SG" {
-  name        = "SG"
-  description = var.description
+resource "aws_security_group" "alb_sg" {
+  name        = "alb-sg"
   vpc_id      = var.vpc_id
 
-  dynamic "ingress" {
-    for_each = var.ingress_rules
-    content {
-      from_port   = ingress.value.from_port
-      to_port     = ingress.value.to_port
-      protocol    = ingress.value.protocol
-      cidr_blocks = ingress.value.cidr_blocks
-      description = lookup(ingress.value, "description", null)
-    }
+ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  dynamic "egress" {
-    for_each = var.egress_rules
-    content {
-      from_port   = egress.value.from_port
-      to_port     = egress.value.to_port
-      protocol    = egress.value.protocol
-      cidr_blocks = egress.value.cidr_blocks
-      description = lookup(egress.value, "description", null)
-    }
-  }
+ingress {
+   description = "HTTPS ingress"
+   from_port   = 443
+   to_port     = 443
+   protocol    = "tcp"
+   cidr_blocks = ["0.0.0.0/0"]
+ }
+
+egress {
+  from_port       = 8000
+  to_port         = 8000
+  protocol        = "tcp"
+  security_groups = [aws_security_group.ecs_sg.id]
+}
 
   tags = merge(
     var.tags,
-    {
-      Name = "${var.name_prefix}-sg"
-    }
+    { Name = "${var.name_prefix}-alb-sg" }
   )
+}
+
+resource "aws_security_group" "ecs_sg" {
+  name   = "ecs-sg"
+  vpc_id = var.vpc_id
+
+  ingress {
+    description     = "Allow traffic from ALB"
+    from_port       = 8000
+    to_port         = 8000
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  tags = merge(
+    var.tags,
+    { Name = "${var.name_prefix}-ecs-sg" }
+  )
+
 }

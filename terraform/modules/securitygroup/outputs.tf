@@ -1,14 +1,7 @@
-output "security_group_id" {
-  description = "The ID of the security group"
-  value       = aws_security_group.SG.id
+output "alb_sg_id" {
+  value = aws_security_group.alb_sg.id
 }
 
-output "security_group_arn" {
-  description = "The ARN of the security group"
-  value       = aws_security_group.SG.arn
-}
-
-output "security_group_name" {
-  description = "The name of the security group"
-  value       = aws_security_group.SG.name
+output "ecs_sg_id" {
+  value = aws_security_group.ecs_sg.id
 }
