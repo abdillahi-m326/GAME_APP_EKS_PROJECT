@@ -3,6 +3,14 @@ resource "aws_s3_bucket" "tf_state" {
   tags   = merge(var.tags, { Name = var.state_bucket_name })
 }
 
+resource "aws_s3_bucket_ownership_controls" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket_versioning" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   versioning_configuration { status = "Enabled" }
@@ -36,7 +44,7 @@ resource "aws_dynamodb_table" "tf_locks" {
   tags = merge(var.tags, { Name = var.lock_table_name })
 }
 
-resource "aws_ecr_repository" "Django_app_repo" {
+resource "aws_ecr_repository" "eks_app_repo" {
   name                 = var.ecr_repo_name
   image_tag_mutability = "MUTABLE"
 
@@ -46,7 +54,7 @@ resource "aws_ecr_repository" "Django_app_repo" {
 }
 
 resource "aws_ecr_lifecycle_policy" "repo_policy" {
-  repository = aws_ecr_repository.Django_app_repo.name
+  repository = aws_ecr_repository.eks_app_repo.name
 
   policy = jsonencode({
     rules = [

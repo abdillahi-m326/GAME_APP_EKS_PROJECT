@@ -12,7 +12,7 @@ variable "state_bucket_name" {
 variable "lock_table_name" {
   type        = string
   description = "DynamoDB table name for Terraform state locking"
-  default     = "django-ecs-locks"
+  default     = "eks-app-locks"
 }
 
 variable "tags" {
@@ -24,5 +24,5 @@ variable "tags" {
 variable "ecr_repo_name" {
   type        = string
   description = "Repository for the app"
-  default     = "django-ecs-app-repo"
+  default     = "eks-app-repo"
 }
