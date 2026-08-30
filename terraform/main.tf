@@ -11,6 +11,7 @@ module "alb" {
 
 module "eks" {
   source = "./modules/eks"
+  cluster_name = "eks-cluster-game-app"
   eks_cluster_role_arn = module.iam.eks_cluster_role_arn
   eks_cluster_role_policy_id = module.iam.eks_cluster_role_policy_id
   eks_node_role_arn = module.iam.eks_node_role_arn
