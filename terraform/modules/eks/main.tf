@@ -2,24 +2,24 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name               = "example"
+  name               = var.cluster_name
   kubernetes_version = "1.33"
 
   endpoint_public_access = true
+  endpoint_public_access_cidrs = ["0.0.0.0/0"]
 
-  # Adds the current caller identity as an administrator via cluster access entry
-  enable_cluster_creator_admin_permissions = true
-
-  compute_config = {
-    enabled    = true
-    node_pools = ["general-purpose"]
-  }
+  enable_irsa = true
 
   vpc_id     = var.vpc_id
-  subnet_ids = var.subnet_ids
+  control_plane_subnet_ids = var.public_subnet_ids
+  subnet_ids = var.private_subnet_ids
 
-  tags = {
-    Environment = "dev"
-    Terraform   = "true"
+   eks_managed_node_groups = {
+    default = {
+      disk_size      = 20
+      instance_types = ["t3a.large", "t3.large"]
+    }
   }
+
+ tags = var.tags
 }

@@ -11,14 +11,15 @@ module "alb" {
 
 module "eks" {
   source = "./modules/eks"
-  cluster_name = "eks-cluster-game-app"
+  cluster_name = local.name
   eks_cluster_role_arn = module.iam.eks_cluster_role_arn
   eks_cluster_role_policy_id = module.iam.eks_cluster_role_policy_id
   eks_node_role_arn = module.iam.eks_node_role_arn
   eks_node_role_policy_id = module.iam.eks_node_role_policy_id
-  subnet_ids = module.vpc.private_subnet_ids
+  public_subnet_ids = module.vpc.public_subnet_ids
+  private_subnet_ids = module.vpc.private_subnet_ids
   vpc_id      = module.vpc.vpc_id
-
+  tags = local.tags
 }
 
 module "iam" {
@@ -26,9 +27,15 @@ module "iam" {
   
 }
 
+module "irsa" {
+  source = "./modules/irsa"
+  tags = local.tags
+  
+}
+
 module "securitygroup" {
   source = "./modules/securitygroup"
-  vpc_id      = module.vpc_id
+  vpc_id      = module.vpc.vpc_id
 }
 
 module "targetgroup" {
