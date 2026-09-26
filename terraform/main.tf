@@ -1,5 +1,6 @@
 module "vpc" {
   source = "./modules/vpc"
+  app_name = local.application_name
 }
 
 module "alb" {

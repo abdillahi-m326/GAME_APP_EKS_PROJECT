@@ -1,11 +1,10 @@
 resource "aws_vpc" "vpc" {
-  cidr_block       = "10.0.0.0/16"
-  instance_tenancy = "default"
+  cidr_block       = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
-    Name = "django-ecs-app-vpc"
+    Name = "${var.app_name}-vpc"
   }
 }
 
@@ -17,7 +16,8 @@ resource "aws_subnet" "public_subnet_1" {
   availability_zone = var.azs[0]
 
   tags = {
-    Name = "django-ecs-app-public-sb1"
+    Name = "${var.app_name}-public-sb1"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -28,7 +28,8 @@ resource "aws_subnet" "public_subnet_2" {
   availability_zone = var.azs[1]
 
   tags = {
-    Name = "django-ecs-app-public-sb2"
+    Name = "${var.app_name}-public-sb2"
+    "kubernetes.io/role/elb" = "1"
   }
 }
 
@@ -41,7 +42,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    Name = "django-ecs-app-public-rt"
+    Name = "${var.app_name}-public-rt"
   }
 }
 
@@ -60,7 +61,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "django-ecs-app-igw"
+    Name = "${var.app_name}-igw"
   }
 }
 
@@ -71,7 +72,8 @@ resource "aws_subnet" "private_subnet_1" {
   availability_zone = var.azs[0]
 
   tags = {
-    Name = "django-ecs-app-private-sb1"
+    Name = "${var.app_name}-private-sb1"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
@@ -81,7 +83,8 @@ resource "aws_subnet" "private_subnet_2" {
   availability_zone = var.azs[1]
 
   tags = {
-    Name = "django-ecs-app-private-sb2"
+    Name = "${var.app_name}-private-sb2"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
@@ -94,7 +97,7 @@ resource "aws_route_table" "private_route_table" {
   }
 
   tags = {
-    Name = "django-ecs-app-private-rt"
+    Name = "${var.app_name}-private-rt"
   }
 }
 
@@ -103,7 +106,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = aws_subnet.public_subnet_1.id
 
   tags = {
-    Name = "django-ecs-app-NAT"
+    Name = "${var.app_name}-NAT"
   }
 
   depends_on = [aws_internet_gateway.igw]
@@ -113,7 +116,7 @@ resource "aws_eip" "nat_eip" {
   domain = "vpc"
 
   tags = {
-    Name = "django-ecs-app-eip"
+    Name = "${var.app_name}-eip"
   }
 }
 
