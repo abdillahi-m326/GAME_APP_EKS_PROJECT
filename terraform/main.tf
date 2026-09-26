@@ -23,26 +23,8 @@ module "eks" {
   tags = local.tags
 }
 
-module "iam" {
-  source = "./modules/iam"
-  
-}
-
 module "irsa" {
   source = "./modules/irsa"
   tags = local.tags
   
 }
-
-module "securitygroup" {
-  source = "./modules/securitygroup"
-  vpc_id      = module.vpc.vpc_id
-}
-
-module "targetgroup" {
-  source = "./modules/targetgroup"
-  vpc_id      = module.vpc.vpc_id
-
-}
-
-
