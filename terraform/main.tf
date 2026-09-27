@@ -26,5 +26,5 @@ module "eks" {
 module "irsa" {
   source = "./modules/irsa"
   tags = local.tags
-  
+  oidc_provider_arn = module.eks.oidc_provider_arn
 }

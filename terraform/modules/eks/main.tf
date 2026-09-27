@@ -10,6 +10,9 @@ module "eks" {
 
   enable_irsa = true
 
+  # Give Terraform creator admin access
+  enable_cluster_creator_admin_permissions = true
+
   vpc_id     = var.vpc_id
   control_plane_subnet_ids = var.public_subnet_ids
   subnet_ids = var.private_subnet_ids
