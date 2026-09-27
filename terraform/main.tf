@@ -28,3 +28,13 @@ module "irsa" {
   tags = local.tags
   oidc_provider_arn = module.eks.oidc_provider_arn
 }
+
+module "eks_addons" {
+  source = "./modules/eks_addons"
+
+  cert_manager_role_arn = module.irsa.cert_manager_role_arn
+
+  external_dns_role_arn = module.irsa.external_dns_role_arn
+
+  aws_load_balancer_controller_role_arn = module.irsa.aws_load_balancer_controller_role_arn
+}
