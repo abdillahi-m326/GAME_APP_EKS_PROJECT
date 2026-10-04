@@ -12,3 +12,8 @@ variable "external_dns_role_arn" {
   description = "IAM role ARN used by External DNS"
   type        = string
 }
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+}

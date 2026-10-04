@@ -1,38 +1,25 @@
 variable "cluster_name" {
-  type = string
-}
-
-variable "eks_cluster_role_arn" {
-  type = string
-}
-
-variable "eks_cluster_role_policy_id" {
-  type = string
-}
-
-variable "eks_node_role_arn" {
-  type = string
-}
-
-variable "eks_node_role_policy_id" {
-  type = string
-}
-
-variable "private_subnet_ids" {
-  description = "List of PRIVATE subnet IDs for EKS"
-  type        = list(string)
-}
-
-variable "public_subnet_ids" {
-  description = "List of PUBLIC subnet IDs for EKS"
-  type        = list(string)
+  description = "Name of the EKS cluster"
+  type        = string
 }
 
 variable "vpc_id" {
-  type = string
+  description = "VPC ID"
+  type        = string
+}
+
+variable "public_subnet_ids" {
+  description = "Public subnet IDs"
+  type        = list(string)
+}
+
+variable "private_subnet_ids" {
+  description = "Private subnet IDs"
+  type        = list(string)
 }
 
 variable "tags" {
-  description = "Tags applied to resources"
+  description = "Tags"
   type        = map(string)
+  default     = {}
 }
