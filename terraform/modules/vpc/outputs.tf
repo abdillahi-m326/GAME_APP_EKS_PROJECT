@@ -25,7 +25,7 @@ output "private_subnet_ids" {
   description = "IDs of the private subnets"
   value = [
     aws_subnet.private_subnet_1.id,
-    aws_,
+    aws_subnet.private_subnet_2.id,
   ]
 }
 

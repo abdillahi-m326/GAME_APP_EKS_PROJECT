@@ -1,5 +1,5 @@
 resource "aws_vpc" "vpc" {
-  cidr_block       = var.vpc_cidr
+  cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -10,25 +10,25 @@ resource "aws_vpc" "vpc" {
 
 # public subnets, associations and route tables
 resource "aws_subnet" "public_subnet_1" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.public_subnet_cidrs[0]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.public_subnet_cidrs[0]
   map_public_ip_on_launch = true
-  availability_zone = var.azs[0]
+  availability_zone       = var.azs[0]
 
   tags = {
-    Name = "${var.app_name}-public-sb1"
+    Name                     = "${var.app_name}-public-sb1"
     "kubernetes.io/role/elb" = "1"
   }
 }
 
 resource "aws_subnet" "public_subnet_2" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.public_subnet_cidrs[1]
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.public_subnet_cidrs[1]
   map_public_ip_on_launch = true
-  availability_zone = var.azs[1]
+  availability_zone       = var.azs[1]
 
   tags = {
-    Name = "${var.app_name}-public-sb2"
+    Name                     = "${var.app_name}-public-sb2"
     "kubernetes.io/role/elb" = "1"
   }
 }
@@ -67,23 +67,23 @@ resource "aws_internet_gateway" "igw" {
 
 # private subnetss, associations and route tables
 resource "aws_subnet" "private_subnet_1" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.private_subnet_cidrs[0]
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_subnet_cidrs[0]
   availability_zone = var.azs[0]
 
   tags = {
-    Name = "${var.app_name}-private-sb1"
+    Name                              = "${var.app_name}-private-sb1"
     "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
 resource "aws_subnet" "private_subnet_2" {
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = var.private_subnet_cidrs[1]
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_subnet_cidrs[1]
   availability_zone = var.azs[1]
 
   tags = {
-    Name = "${var.app_name}-private-sb2"
+    Name                              = "${var.app_name}-private-sb2"
     "kubernetes.io/role/internal-elb" = "1"
   }
 }
@@ -92,7 +92,7 @@ resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
   }
 

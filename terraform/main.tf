@@ -1,7 +1,7 @@
 module "vpc" {
   source   = "./modules/vpc"
   app_name = local.application_name
-  azs = local.azs
+  azs      = local.azs
 }
 
 module "eks" {
