@@ -19,3 +19,8 @@ variable "vpc_cidr" {
 variable "app_name" {
   type = string
 }
+
+variable "azs" {
+  description = "Availability zones used by the VPC"
+  type        = list(string)
+}
